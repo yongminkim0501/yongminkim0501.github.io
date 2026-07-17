@@ -1,248 +1,495 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>글 관리</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:300,400,500&display=swap">
-<style>
-  :root {
-    --theme: #004191; --bg: #fff; --text: #404040; --text-strong: #1c1c1d;
-    --text-muted: #828282; --divider: #e8e8e8; --card: #f6f8fa;
-    --ok: #1a7f37; --err: #c0392b;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --theme: #4a90d9; --bg: #1c1c1d; --text: #c1c1c1; --text-strong: #f0f0f0;
-      --text-muted: #8e8e8e; --divider: #333; --card: #26262a;
-      --ok: #4ac26b; --err: #e57368;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; font-family: "Roboto", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    font-weight: 300; line-height: 1.6; color: var(--text); background: var(--bg);
-  }
-  main { max-width: 780px; margin: 0 auto; padding: 3rem 1rem 5rem; }
-  h1 { font-family: "Roboto Slab", serif; font-weight: 300; color: var(--text-strong); }
-  h2 { font-family: "Roboto Slab", serif; font-weight: 400; font-size: 1.2rem; color: var(--text-strong); margin-top: 2.5rem; }
-  label { display: block; font-size: .85rem; font-weight: 500; color: var(--text-strong); margin: 1rem 0 .3rem; }
-  input, textarea {
-    width: 100%; padding: .55rem .7rem; font: inherit; color: var(--text-strong);
-    background: var(--bg); border: 1px solid var(--divider); border-radius: .4rem;
-  }
-  input:focus, textarea:focus { outline: 2px solid var(--theme); border-color: transparent; }
-  textarea { min-height: 280px; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .92rem; }
-  button {
-    font: inherit; font-weight: 500; cursor: pointer; border-radius: .4rem;
-    padding: .55rem 1.2rem; border: 1px solid var(--theme);
-    background: var(--theme); color: #fff; margin-top: 1.2rem;
-  }
-  button.secondary { background: none; color: var(--theme); }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  .hint { font-size: .82rem; color: var(--text-muted); margin-top: .3rem; }
-  .hint a { color: var(--theme); }
-  #status { margin-top: 1rem; font-size: .92rem; min-height: 1.4em; }
-  #status.ok { color: var(--ok); }
-  #status.err { color: var(--err); }
-  .post-row {
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    border-bottom: 1px solid var(--divider); padding: .7rem 0;
-  }
-  .post-row .t { font-weight: 500; color: var(--text-strong); }
-  .post-row .d { font-size: .82rem; color: var(--text-muted); }
-  .post-row .actions button { margin: 0 0 0 .4rem; padding: .25rem .7rem; font-size: .82rem; }
-  .post-row .actions .danger { border-color: var(--err); color: var(--err); background: none; }
-  .card { background: var(--card); border-radius: .5rem; padding: 1rem 1.2rem; font-size: .85rem; margin-top: 1rem; }
-  .card ul { margin: .4rem 0 0; padding-left: 1.2rem; }
-</style>
-</head>
-<body>
-<main>
-  <h1>글 관리</h1>
-  <p class="hint">이 페이지에서 글을 쓰고 "발행"을 누르면 GitHub API를 통해 저장소의 <code>posts.json</code>이 갱신되고,
-    잠시 후(보통 1분 내) 블로그에 자동으로 반영됩니다.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>글 관리</title>
+    <meta name="robots" content="noindex" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:300,400,500&display=swap"
+    />
+    <style>
+      :root {
+        --theme: #004191;
+        --bg: #fff;
+        --text: #404040;
+        --text-strong: #1c1c1d;
+        --text-muted: #828282;
+        --divider: #e8e8e8;
+        --card: #f6f8fa;
+        --ok: #1a7f37;
+        --err: #c0392b;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --theme: #4a90d9;
+          --bg: #1c1c1d;
+          --text: #c1c1c1;
+          --text-strong: #f0f0f0;
+          --text-muted: #8e8e8e;
+          --divider: #333;
+          --card: #26262a;
+          --ok: #4ac26b;
+          --err: #e57368;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          "Roboto", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+        font-weight: 300;
+        line-height: 1.6;
+        color: var(--text);
+        background: var(--bg);
+      }
+      main {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 3rem 1rem 5rem;
+      }
+      h1 {
+        font-family: "Roboto Slab", serif;
+        font-weight: 300;
+        color: var(--text-strong);
+      }
+      h2 {
+        font-family: "Roboto Slab", serif;
+        font-weight: 400;
+        font-size: 1.2rem;
+        color: var(--text-strong);
+        margin-top: 2.5rem;
+      }
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-strong);
+        margin: 1rem 0 0.3rem;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.55rem 0.7rem;
+        font: inherit;
+        color: var(--text-strong);
+        background: var(--bg);
+        border: 1px solid var(--divider);
+        border-radius: 0.4rem;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid var(--theme);
+        border-color: transparent;
+      }
+      textarea {
+        min-height: 280px;
+        resize: vertical;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.92rem;
+      }
+      button {
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 0.4rem;
+        padding: 0.55rem 1.2rem;
+        border: 1px solid var(--theme);
+        background: var(--theme);
+        color: #fff;
+        margin-top: 1.2rem;
+      }
+      button.secondary {
+        background: none;
+        color: var(--theme);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .hint {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-top: 0.3rem;
+      }
+      .hint a {
+        color: var(--theme);
+      }
+      #status {
+        margin-top: 1rem;
+        font-size: 0.92rem;
+        min-height: 1.4em;
+      }
+      #status.ok {
+        color: var(--ok);
+      }
+      #status.err {
+        color: var(--err);
+      }
+      .post-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid var(--divider);
+        padding: 0.7rem 0;
+      }
+      .post-row .t {
+        font-weight: 500;
+        color: var(--text-strong);
+      }
+      .post-row .d {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      .post-row .actions button {
+        margin: 0 0 0 0.4rem;
+        padding: 0.25rem 0.7rem;
+        font-size: 0.82rem;
+      }
+      .post-row .actions .danger {
+        border-color: var(--err);
+        color: var(--err);
+        background: none;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 0.5rem;
+        padding: 1rem 1.2rem;
+        font-size: 0.85rem;
+        margin-top: 1rem;
+      }
+      .card ul {
+        margin: 0.4rem 0 0;
+        padding-left: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>글 관리</h1>
+      <p class="hint">
+        이 페이지에서 글을 쓰고 "발행"을 누르면 GitHub API를 통해 저장소의
+        <code>posts.json</code>이 갱신되고, 잠시 후(보통 1분 내) 블로그에
+        자동으로 반영됩니다.
+      </p>
 
-  <h2>1. 인증</h2>
-  <label for="token">GitHub Personal Access Token</label>
-  <input type="password" id="token" placeholder="github_pat_..." autocomplete="off">
-  <p class="hint">
-    토큰은 이 브라우저 탭의 메모리에만 잠깐 사용되고 어디에도 저장되지 않습니다. 탭을 닫으면 사라지므로 매번 붙여넣어야 해요.<br>
-    발급: GitHub → Settings → Developer settings → <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">Fine-grained tokens</a>
-    → Repository access를 <strong>이 저장소 하나만</strong> 선택 → Permissions에서 <strong>Contents: Read and write</strong>만 부여.
-  </p>
-  <button id="load" class="secondary">글 목록 불러오기</button>
+      <h2>1. 인증</h2>
+      <label for="token">GitHub Personal Access Token</label>
+      <input
+        type="password"
+        id="token"
+        placeholder="github_pat_..."
+        autocomplete="off"
+      />
+      <label
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: 400;
+          margin-top: 0.6rem;
+          cursor: pointer;
+        "
+      >
+        <input type="checkbox" id="remember" style="width: auto; margin: 0" />
+        이 브라우저에 토큰 기억하기
+      </label>
+      <p class="hint">
+        체크하면 토큰이 이 브라우저의 localStorage에 저장되어 다음부터 자동으로
+        채워집니다.
+        <strong>본인만 쓰는 기기에서만</strong> 체크하세요. 공용/타인 PC에서는
+        체크하지 말 것. 체크를 해제하면 저장된 토큰은 즉시 삭제됩니다.<br />
+        발급: GitHub → Settings → Developer settings →
+        <a
+          href="https://github.com/settings/personal-access-tokens/new"
+          target="_blank"
+          >Fine-grained tokens</a
+        >
+        → Repository access를 <strong>이 저장소 하나만</strong> 선택 →
+        Permissions에서 <strong>Contents: Read and write</strong>만 부여.
+      </p>
+      <button id="load" class="secondary">글 목록 불러오기</button>
 
-  <h2>2. 새 글 작성</h2>
-  <label for="title">제목</label>
-  <input id="title" placeholder="글 제목">
-  <label for="date">날짜</label>
-  <input id="date" type="date">
-  <label for="content">본문 (마크다운)</label>
-  <textarea id="content" placeholder="## 소제목&#10;&#10;**굵게**, `코드`, 목록 등 마크다운 문법을 쓸 수 있습니다."></textarea>
-  <button id="publish">발행하기</button>
-  <p id="status"></p>
+      <h2>2. 새 글 작성</h2>
+      <label for="title">제목</label>
+      <input id="title" placeholder="글 제목" />
+      <label for="date">날짜</label>
+      <input id="date" type="date" />
+      <label for="content">본문 (마크다운)</label>
+      <textarea
+        id="content"
+        placeholder="## 소제목&#10;&#10;**굵게**, `코드`, 목록 등 마크다운 문법을 쓸 수 있습니다."
+      ></textarea>
+      <button id="publish">발행하기</button>
+      <p id="status"></p>
 
-  <h2>3. 작성된 글</h2>
-  <div id="list"><p class="hint">토큰 입력 후 "글 목록 불러오기"를 누르세요.</p></div>
+      <h2>3. 작성된 글</h2>
+      <div id="list">
+        <p class="hint">토큰 입력 후 "글 목록 불러오기"를 누르세요.</p>
+      </div>
 
-  <div class="card">
-    <strong>알아두기</strong>
-    <ul>
-      <li>이 페이지(admin.html)는 공개 저장소에 있어서 누구나 열어볼 수 있지만, 토큰 없이는 아무것도 발행할 수 없습니다.</li>
-      <li>발행할 때마다 저장소에 커밋이 하나씩 생깁니다 (커밋 내역 = 글 수정 이력).</li>
-      <li>발행 후 사이트 반영까지 GitHub Pages 빌드 시간(수십 초~1분)이 걸립니다.</li>
-    </ul>
-  </div>
-</main>
+      <div class="card">
+        <strong>알아두기</strong>
+        <ul>
+          <li>
+            이 페이지(admin.html)는 공개 저장소에 있어서 누구나 열어볼 수
+            있지만, 토큰 없이는 아무것도 발행할 수 없습니다.
+          </li>
+          <li>
+            "토큰 기억하기"는
+            <strong>지금 쓰는 브라우저에만</strong> 저장됩니다. 다른
+            기기/브라우저에서는 다시 입력해야 하고, 사이트 방문자들에게는 당연히
+            보이지 않습니다.
+          </li>
+          <li>
+            발행할 때마다 저장소에 커밋이 하나씩 생깁니다 (커밋 내역 = 글 수정
+            이력).
+          </li>
+          <li>
+            발행 후 사이트 반영까지 GitHub Pages 빌드 시간(수십 초~1분)이
+            걸립니다.
+          </li>
+        </ul>
+      </div>
+    </main>
 
-<script>
-  // 저장소 자동 감지: username.github.io 에서 열면 owner/repo가 자동으로 잡힙니다.
-  // 로컬에서 테스트할 땐 아래 두 값을 직접 적어주세요.
-  const OWNER = location.hostname.endsWith('.github.io')
-    ? location.hostname.split('.')[0]
-    : '';                       // ✏️ 예: 'yourid'
-  const REPO = OWNER ? location.hostname : ''; // ✏️ 예: 'yourid.github.io'
-  const FILE = 'posts.json';
-  const API = () => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`;
+    <script>
+      // 저장소 자동 감지: username.github.io 에서 열면 owner/repo가 자동으로 잡힙니다.
+      // 로컬에서 테스트할 땐 아래 두 값을 직접 적어주세요.
+      const OWNER = location.hostname.endsWith(".github.io")
+        ? location.hostname.split(".")[0]
+        : ""; // ✏️ 예: 'yourid'
+      const REPO = OWNER ? location.hostname : ""; // ✏️ 예: 'yourid.github.io'
+      const FILE = "posts.json";
+      const API = () =>
+        `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`;
 
-  const $ = id => document.getElementById(id);
-  const statusEl = $('status');
-  $('date').value = new Date().toISOString().slice(0, 10);
+      const $ = (id) => document.getElementById(id);
+      const statusEl = $("status");
+      $("date").value = new Date().toISOString().slice(0, 10);
 
-  function setStatus(msg, kind) {
-    statusEl.textContent = msg;
-    statusEl.className = kind || '';
-  }
-  const b64encode = s => btoa(Array.from(new TextEncoder().encode(s), b => String.fromCharCode(b)).join(''));
-  const b64decode = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g, '')), c => c.charCodeAt(0)));
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      // ── 토큰 기억하기 (localStorage) ──
+      const TOKEN_KEY = "gh_admin_token";
+      const saved = localStorage.getItem(TOKEN_KEY);
+      if (saved) {
+        $("token").value = saved;
+        $("remember").checked = true;
+      }
+      function rememberToken() {
+        if ($("remember").checked)
+          localStorage.setItem(TOKEN_KEY, $("token").value.trim());
+      }
+      $("remember").addEventListener("change", (e) => {
+        if (e.target.checked) rememberToken();
+        else {
+          localStorage.removeItem(TOKEN_KEY);
+          setStatus("저장된 토큰을 삭제했습니다.", "ok");
+        }
+      });
+      $("token").addEventListener("input", rememberToken);
 
-  function headers() {
-    const token = $('token').value.trim();
-    if (!token) throw new Error('토큰을 먼저 입력하세요.');
-    return {
-      'Authorization': 'Bearer ' + token,
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28'
-    };
-  }
+      function setStatus(msg, kind) {
+        statusEl.textContent = msg;
+        statusEl.className = kind || "";
+      }
+      const b64encode = (s) =>
+        btoa(
+          Array.from(new TextEncoder().encode(s), (b) =>
+            String.fromCharCode(b),
+          ).join(""),
+        );
+      const b64decode = (b) =>
+        new TextDecoder().decode(
+          Uint8Array.from(atob(b.replace(/\n/g, "")), (c) => c.charCodeAt(0)),
+        );
+      const esc = (s) =>
+        String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
 
-  async function fetchPosts() {
-    if (!OWNER) throw new Error('저장소를 감지하지 못했습니다. admin.html 상단 스크립트의 OWNER/REPO를 직접 적어주세요.');
-    const res = await fetch(API(), { headers: headers() });
-    if (res.status === 404) return { posts: [], sha: null };
-    if (res.status === 401) throw new Error('토큰이 유효하지 않습니다 (401).');
-    if (!res.ok) throw new Error('불러오기 실패: ' + res.status);
-    const data = await res.json();
-    let posts = [];
-    try { posts = JSON.parse(b64decode(data.content)); } catch (e) { posts = []; }
-    return { posts: Array.isArray(posts) ? posts : [], sha: data.sha };
-  }
+      function headers() {
+        const token = $("token").value.trim();
+        if (!token) throw new Error("토큰을 먼저 입력하세요.");
+        return {
+          Authorization: "Bearer " + token,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        };
+      }
 
-  async function savePosts(posts, sha, message) {
-    const body = {
-      message,
-      content: b64encode(JSON.stringify(posts, null, 2))
-    };
-    if (sha) body.sha = sha;
-    const res = await fetch(API(), {
-      method: 'PUT',
-      headers: { ...headers(), 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (res.status === 409) throw new Error('충돌이 발생했습니다. 목록을 다시 불러온 뒤 시도하세요.');
-    if (!res.ok) throw new Error('저장 실패: ' + res.status + ' (토큰 권한에 Contents: Read and write가 있는지 확인하세요)');
-  }
+      async function fetchPosts() {
+        if (!OWNER)
+          throw new Error(
+            "저장소를 감지하지 못했습니다. admin.html 상단 스크립트의 OWNER/REPO를 직접 적어주세요.",
+          );
+        const res = await fetch(API(), { headers: headers() });
+        if (res.status === 404) return { posts: [], sha: null };
+        if (res.status === 401)
+          throw new Error("토큰이 유효하지 않습니다 (401).");
+        if (!res.ok) throw new Error("불러오기 실패: " + res.status);
+        const data = await res.json();
+        let posts = [];
+        try {
+          posts = JSON.parse(b64decode(data.content));
+        } catch (e) {
+          posts = [];
+        }
+        return { posts: Array.isArray(posts) ? posts : [], sha: data.sha };
+      }
 
-  function slugify(title) {
-    const base = title.toLowerCase().trim()
-      .replace(/[^a-z0-9가-힣\s-]/g, '').replace(/\s+/g, '-').slice(0, 40);
-    return (base || 'post') + '-' + Date.now().toString(36);
-  }
+      async function savePosts(posts, sha, message) {
+        const body = {
+          message,
+          content: b64encode(JSON.stringify(posts, null, 2)),
+        };
+        if (sha) body.sha = sha;
+        const res = await fetch(API(), {
+          method: "PUT",
+          headers: { ...headers(), "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (res.status === 409)
+          throw new Error(
+            "충돌이 발생했습니다. 목록을 다시 불러온 뒤 시도하세요.",
+          );
+        if (!res.ok)
+          throw new Error(
+            "저장 실패: " +
+              res.status +
+              " (토큰 권한에 Contents: Read and write가 있는지 확인하세요)",
+          );
+      }
 
-  function renderList(posts) {
-    const list = $('list');
-    if (posts.length === 0) {
-      list.innerHTML = '<p class="hint">아직 글이 없습니다.</p>';
-      return;
-    }
-    list.innerHTML = posts.map(p => `
+      function slugify(title) {
+        const base = title
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9가-힣\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .slice(0, 40);
+        return (base || "post") + "-" + Date.now().toString(36);
+      }
+
+      function renderList(posts) {
+        const list = $("list");
+        if (posts.length === 0) {
+          list.innerHTML = '<p class="hint">아직 글이 없습니다.</p>';
+          return;
+        }
+        list.innerHTML = posts
+          .map(
+            (p) => `
       <div class="post-row" data-slug="${esc(p.slug)}">
         <div><span class="t">${esc(p.title)}</span> <span class="d">${esc(p.date)}</span></div>
         <div class="actions">
           <button class="secondary" data-act="edit">수정</button>
           <button class="danger" data-act="delete">삭제</button>
         </div>
-      </div>`).join('');
-  }
-
-  let editingSlug = null; // 수정 모드일 때 대상 slug
-
-  $('load').addEventListener('click', async () => {
-    try {
-      setStatus('불러오는 중…');
-      const { posts } = await fetchPosts();
-      renderList(posts);
-      setStatus('글 ' + posts.length + '개를 불러왔습니다.', 'ok');
-    } catch (e) { setStatus(e.message, 'err'); }
-  });
-
-  $('publish').addEventListener('click', async () => {
-    const title = $('title').value.trim();
-    const date = $('date').value;
-    const content = $('content').value.trim();
-    if (!title || !content) { setStatus('제목과 본문을 입력하세요.', 'err'); return; }
-    $('publish').disabled = true;
-    try {
-      setStatus(editingSlug ? '수정 발행 중…' : '발행 중…');
-      const { posts, sha } = await fetchPosts();
-      if (editingSlug) {
-        const i = posts.findIndex(p => p.slug === editingSlug);
-        if (i >= 0) posts[i] = { ...posts[i], title, date, content };
-        else posts.unshift({ slug: slugify(title), title, date, content });
-        await savePosts(posts, sha, 'post: update "' + title + '"');
-      } else {
-        posts.unshift({ slug: slugify(title), title, date, content });
-        await savePosts(posts, sha, 'post: add "' + title + '"');
+      </div>`,
+          )
+          .join("");
       }
-      renderList(posts);
-      $('title').value = ''; $('content').value = '';
-      editingSlug = null; $('publish').textContent = '발행하기';
-      setStatus('발행 완료! 사이트에는 약 1분 내로 반영됩니다.', 'ok');
-    } catch (e) { setStatus(e.message, 'err'); }
-    finally { $('publish').disabled = false; }
-  });
 
-  $('list').addEventListener('click', async ev => {
-    const btn = ev.target.closest('button');
-    if (!btn) return;
-    const slug = btn.closest('.post-row').dataset.slug;
-    if (btn.dataset.act === 'edit') {
-      try {
-        const { posts } = await fetchPosts();
-        const p = posts.find(x => x.slug === slug);
-        if (!p) return;
-        $('title').value = p.title; $('date').value = p.date; $('content').value = p.content;
-        editingSlug = slug;
-        $('publish').textContent = '수정 발행하기';
-        setStatus('"' + p.title + '" 수정 중입니다. 편집 후 발행을 누르세요.');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (e) { setStatus(e.message, 'err'); }
-    }
-    if (btn.dataset.act === 'delete') {
-      if (!confirm('이 글을 삭제할까요? 저장소 커밋 기록에는 남지만 사이트에서는 사라집니다.')) return;
-      try {
-        setStatus('삭제 중…');
-        const { posts, sha } = await fetchPosts();
-        const next = posts.filter(p => p.slug !== slug);
-        await savePosts(next, sha, 'post: delete "' + slug + '"');
-        renderList(next);
-        setStatus('삭제 완료. 사이트에는 약 1분 내로 반영됩니다.', 'ok');
-      } catch (e) { setStatus(e.message, 'err'); }
-    }
-  });
-</script>
-</body>
+      let editingSlug = null; // 수정 모드일 때 대상 slug
+
+      $("load").addEventListener("click", async () => {
+        try {
+          setStatus("불러오는 중…");
+          const { posts } = await fetchPosts();
+          renderList(posts);
+          setStatus("글 " + posts.length + "개를 불러왔습니다.", "ok");
+        } catch (e) {
+          setStatus(e.message, "err");
+        }
+      });
+
+      $("publish").addEventListener("click", async () => {
+        const title = $("title").value.trim();
+        const date = $("date").value;
+        const content = $("content").value.trim();
+        if (!title || !content) {
+          setStatus("제목과 본문을 입력하세요.", "err");
+          return;
+        }
+        $("publish").disabled = true;
+        try {
+          setStatus(editingSlug ? "수정 발행 중…" : "발행 중…");
+          const { posts, sha } = await fetchPosts();
+          if (editingSlug) {
+            const i = posts.findIndex((p) => p.slug === editingSlug);
+            if (i >= 0) posts[i] = { ...posts[i], title, date, content };
+            else posts.unshift({ slug: slugify(title), title, date, content });
+            await savePosts(posts, sha, 'post: update "' + title + '"');
+          } else {
+            posts.unshift({ slug: slugify(title), title, date, content });
+            await savePosts(posts, sha, 'post: add "' + title + '"');
+          }
+          renderList(posts);
+          $("title").value = "";
+          $("content").value = "";
+          editingSlug = null;
+          $("publish").textContent = "발행하기";
+          setStatus("발행 완료! 사이트에는 약 1분 내로 반영됩니다.", "ok");
+        } catch (e) {
+          setStatus(e.message, "err");
+        } finally {
+          $("publish").disabled = false;
+        }
+      });
+
+      $("list").addEventListener("click", async (ev) => {
+        const btn = ev.target.closest("button");
+        if (!btn) return;
+        const slug = btn.closest(".post-row").dataset.slug;
+        if (btn.dataset.act === "edit") {
+          try {
+            const { posts } = await fetchPosts();
+            const p = posts.find((x) => x.slug === slug);
+            if (!p) return;
+            $("title").value = p.title;
+            $("date").value = p.date;
+            $("content").value = p.content;
+            editingSlug = slug;
+            $("publish").textContent = "수정 발행하기";
+            setStatus(
+              '"' + p.title + '" 수정 중입니다. 편집 후 발행을 누르세요.',
+            );
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } catch (e) {
+            setStatus(e.message, "err");
+          }
+        }
+        if (btn.dataset.act === "delete") {
+          if (
+            !confirm(
+              "이 글을 삭제할까요? 저장소 커밋 기록에는 남지만 사이트에서는 사라집니다.",
+            )
+          )
+            return;
+          try {
+            setStatus("삭제 중…");
+            const { posts, sha } = await fetchPosts();
+            const next = posts.filter((p) => p.slug !== slug);
+            await savePosts(next, sha, 'post: delete "' + slug + '"');
+            renderList(next);
+            setStatus("삭제 완료. 사이트에는 약 1분 내로 반영됩니다.", "ok");
+          } catch (e) {
+            setStatus(e.message, "err");
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
