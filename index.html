@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ✏️ 여기부터: 본인 이름/소개로 수정하세요 -->
+<title>Gildong Hong</title>
+<meta name="author" content="Gildong Hong">
+<meta name="description" content="Gildong Hong — Computer Science student. Interested in Machine Learning and Software Engineering.">
+<!-- ✏️ 여기까지 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:300,400,500,700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧑‍💻</text></svg>">
+<style>
+  :root {
+    --theme: #004191;            /* 포인트 컬러 (파란색). 원하는 색으로 바꿔도 됨 */
+    --bg: #ffffff;
+    --text: #404040;
+    --text-strong: #1c1c1d;
+    --text-muted: #828282;
+    --divider: #e8e8e8;
+    --card: #f6f8fa;
+    --max-width: 930px;
+  }
+  html[data-theme="dark"] {
+    --theme: #4a90d9;
+    --bg: #1c1c1d;
+    --text: #c1c1c1;
+    --text-strong: #f0f0f0;
+    --text-muted: #8e8e8e;
+    --divider: #333;
+    --card: #26262a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Roboto", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    transition: background .2s, color .2s;
+  }
+  a { color: var(--theme); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { font-weight: 500; color: var(--text-strong); }
+
+  /* ── 상단 네비게이션 ─────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--divider);
+  }
+  .nav-inner {
+    max-width: var(--max-width); margin: 0 auto;
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 1.4rem; padding: .8rem 1rem;
+    font-size: .95rem;
+  }
+  .nav-inner a { color: var(--text); }
+  .nav-inner a.active { font-weight: 500; color: var(--text-strong); }
+  #theme-toggle {
+    background: none; border: none; cursor: pointer;
+    color: var(--text); font-size: 1rem; padding: 0;
+  }
+  #theme-toggle:hover { color: var(--theme); }
+
+  main { max-width: var(--max-width); margin: 0 auto; padding: 6rem 1rem 4rem; }
+
+  /* ── 헤더(이름) ─────────────────────────── */
+  h1 {
+    font-family: "Roboto Slab", serif;
+    font-weight: 300; font-size: 3rem;
+    margin: 0 0 .3rem; color: var(--text-strong);
+  }
+  h1 .bold { font-weight: 700; }
+  .desc { margin: 0 0 2rem; color: var(--text-muted); }
+
+  /* ── 프로필 사진 ────────────────────────── */
+  .profile {
+    float: right; width: 260px; margin: 0 0 1rem 2rem; text-align: center;
+  }
+  .profile img, .profile .avatar-fallback {
+    width: 100%; aspect-ratio: 1; border-radius: 50%;
+    object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  }
+  .avatar-fallback {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card); color: var(--theme);
+    font-family: "Roboto Slab", serif; font-size: 4.5rem; font-weight: 500;
+  }
+  .profile .more-info { margin-top: .8rem; font-size: .85rem; color: var(--text-muted); }
+  .profile .more-info p { margin: .1rem 0; }
+
+  /* ── 섹션 제목 ──────────────────────────── */
+  h2 {
+    font-family: "Roboto Slab", serif;
+    font-weight: 400; font-size: 1.6rem;
+    margin: 3rem 0 1rem; color: var(--text-strong);
+    clear: none;
+  }
+  h2 a { color: inherit; }
+
+  /* ── News 테이블 ────────────────────────── */
+  .news table { width: 100%; border-collapse: collapse; }
+  .news th {
+    width: 22%; text-align: left; vertical-align: top;
+    font-weight: 500; color: var(--text-strong);
+    padding: .35rem .5rem .35rem 0; white-space: nowrap;
+  }
+  .news td { padding: .35rem 0; vertical-align: top; }
+
+  /* ── Publications / Projects ────────────── */
+  .pub { display: flex; gap: 1rem; margin-bottom: 1.6rem; }
+  .pub .badge {
+    flex: 0 0 90px; align-self: flex-start;
+    background: var(--theme); color: #fff;
+    text-align: center; font-size: .75rem; font-weight: 500;
+    border-radius: .3rem; padding: .35rem .3rem;
+  }
+  .pub .title { font-weight: 500; color: var(--text-strong); }
+  .pub .authors, .pub .venue { font-size: .92rem; }
+  .pub .venue { font-style: italic; color: var(--text-muted); }
+  .pub .links { margin-top: .3rem; }
+  .pub .links a {
+    display: inline-block; font-size: .78rem;
+    border: 1px solid var(--theme); border-radius: .3rem;
+    padding: .12rem .5rem; margin-right: .35rem;
+  }
+  .pub .links a:hover { background: var(--theme); color: #fff; text-decoration: none; }
+
+  /* ── 소셜 아이콘 ────────────────────────── */
+  .social { text-align: center; margin-top: 3.5rem; clear: both; }
+  .social a { font-size: 1.7rem; margin: 0 .55rem; color: var(--text); }
+  .social a:hover { color: var(--theme); }
+  .contact-note { text-align: center; font-size: .85rem; color: var(--text-muted); margin-top: .6rem; }
+
+  footer {
+    border-top: 1px solid var(--divider);
+    text-align: center; font-size: .8rem; color: var(--text-muted);
+    padding: 1rem; margin-top: 3rem;
+  }
+
+  @media (max-width: 700px) {
+    .profile { float: none; margin: 0 auto 1.5rem; }
+    h1 { font-size: 2.2rem; }
+    .pub { flex-direction: column; gap: .4rem; }
+    .pub .badge { flex: none; width: fit-content; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    body { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="active">About</a>
+    <a href="#news">News</a>
+    <a href="#publications">Publications</a>
+    <a href="#projects">Projects</a>
+    <a href="blog.html">Blog</a>
+    <!-- ✏️ CV PDF가 있으면 저장소에 cv.pdf를 올리고 아래 주석을 해제하세요
+    <a href="cv.pdf" target="_blank">CV</a> -->
+    <button id="theme-toggle" title="테마 변경" aria-label="테마 변경"><i class="fa-solid fa-moon"></i></button>
+  </div>
+</nav>
+
+<main>
+  <header>
+    <!-- ✏️ 이름 수정 -->
+    <h1><span class="bold">Gildong</span> Hong</h1>
+    <!-- ✏️ 소속 한 줄 소개 수정 -->
+    <p class="desc">B.S. Student, <a href="https://example.com" target="_blank">OO University Dept. of Computer Science</a></p>
+  </header>
+
+  <article>
+    <div class="profile">
+      <!-- ✏️ 사진: 저장소에 profile.jpg를 올리면 자동으로 표시됩니다. 없으면 이니셜 원형이 대신 나와요. -->
+      <img src="profile.jpg" alt="profile photo"
+           onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot;>GH</div>'">
+      <div class="more-info">
+        <p>B.S. @ OO University</p>
+        <p>Republic of Korea</p>
+      </div>
+    </div>
+
+    <!-- ✏️ 자기소개 문단 수정 -->
+    <p>Hi! I'm <strong>Gildong Hong</strong>, a Computer Science student at
+      <a href="https://example.com" target="_blank">OO University</a>.
+      I'm interested in <strong>Machine Learning</strong>, <strong>Backend Development</strong>,
+      and building things that people actually use.</p>
+
+    <p>Currently, I'm working on side projects and studying algorithms.
+      Feel free to browse my code on <a href="https://github.com/yourid" target="_blank">GitHub</a>
+      or reach me by email.</p>
+
+    <h2 id="news">News</h2>
+    <div class="news">
+      <table>
+        <!-- ✏️ 최근 소식을 위에서부터 최신순으로. 행을 복사해서 추가/삭제하면 됩니다. -->
+        <tr><th>Jul 01, 2026</th><td>Launched my personal website. 🎉</td></tr>
+        <tr><th>Mar 02, 2026</th><td>Started a new semester at <strong>OO University</strong>. 🎓</td></tr>
+        <tr><th>Jan 15, 2026</th><td>Won a prize at the OO Hackathon. 🏆</td></tr>
+      </table>
+    </div>
+
+    <h2 id="publications">Publications</h2>
+    <!-- ✏️ 논문이 없으면 이 섹션 전체(h2 포함)를 지우고, 대신 Projects만 남겨도 됩니다. -->
+    <div class="pub">
+      <div class="badge">arXiv</div>
+      <div>
+        <div class="title">My Awesome Paper Title Goes Here</div>
+        <div class="authors"><em>Gildong Hong</em> and Coauthor Name</div>
+        <div class="venue">arXiv preprint, 2026</div>
+        <div class="links">
+          <a href="#" target="_blank">arXiv</a>
+          <a href="#" target="_blank">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="projects">Projects</h2>
+    <div class="pub">
+      <div class="badge">Project</div>
+      <div>
+        <div class="title">Project Name</div>
+        <div class="authors">한 줄 설명: 어떤 문제를 풀었고 무엇으로 만들었는지</div>
+        <div class="links">
+          <a href="https://github.com/yourid/repo" target="_blank">GitHub</a>
+          <a href="#" target="_blank">Demo</a>
+        </div>
+      </div>
+    </div>
+    <div class="pub">
+      <div class="badge">Project</div>
+      <div>
+        <div class="title">Another Project</div>
+        <div class="authors">두 번째 프로젝트 설명</div>
+        <div class="links">
+          <a href="https://github.com/yourid/repo2" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="blog"><a href="blog.html" style="color: inherit">Blog</a></h2>
+    <div id="latest-posts"><p style="color:var(--text-muted)">불러오는 중…</p></div>
+
+    <div class="social">
+      <!-- ✏️ 링크 수정: 이메일 / 깃허브 / 백준 등 -->
+      <a href="mailto:you@example.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+      <a href="https://github.com/yourid" title="GitHub" target="_blank"><i class="fa-brands fa-github"></i></a>
+      <a href="https://www.acmicpc.net/user/yourid" title="Baekjoon" target="_blank"><i class="fa-solid fa-code"></i></a>
+      <div class="contact-note">Email is the fastest way to reach me.</div>
+    </div>
+  </article>
+</main>
+
+<footer>© 2026 Gildong Hong. Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.</footer>
+
+<script>
+  // 라이트/다크 테마 토글 (선택은 기억되지 않고, 처음엔 시스템 설정을 따릅니다)
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const icon = btn.querySelector('i');
+  function apply(dark) {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  }
+  apply(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  btn.addEventListener('click', () => apply(root.getAttribute('data-theme') !== 'dark'));
+
+  // 최신 글 3개 불러오기 (posts.json은 관리자 페이지에서 자동으로 갱신됩니다)
+  const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  fetch('posts.json?t=' + Date.now())
+    .then(r => r.ok ? r.json() : [])
+    .then(posts => {
+      const el = document.getElementById('latest-posts');
+      if (!Array.isArray(posts) || posts.length === 0) {
+        el.innerHTML = '<p style="color:var(--text-muted)">아직 작성된 글이 없습니다.</p>';
+        return;
+      }
+      el.innerHTML = posts.slice(0, 3).map(p => `
+        <div class="pub">
+          <div class="badge">Post</div>
+          <div>
+            <div class="title"><a href="blog.html#${encodeURIComponent(p.slug)}">${esc(p.title)}</a></div>
+            <div class="venue">${esc(p.date)}</div>
+          </div>
+        </div>`).join('');
+    })
+    .catch(() => {
+      document.getElementById('latest-posts').innerHTML =
+        '<p style="color:var(--text-muted)">아직 작성된 글이 없습니다.</p>';
+    });
+</script>
+</body>
+</html>

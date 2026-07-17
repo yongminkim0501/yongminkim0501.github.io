@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ✏️ 이름 수정 -->
+<title>Blog — Gildong Hong</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:300,400,500,700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+<style>
+  :root {
+    --theme: #004191; --bg: #fff; --text: #404040; --text-strong: #1c1c1d;
+    --text-muted: #828282; --divider: #e8e8e8; --card: #f6f8fa; --max-width: 780px;
+  }
+  html[data-theme="dark"] {
+    --theme: #4a90d9; --bg: #1c1c1d; --text: #c1c1c1; --text-strong: #f0f0f0;
+    --text-muted: #8e8e8e; --divider: #333; --card: #26262a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Roboto", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-weight: 300; line-height: 1.7; color: var(--text); background: var(--bg);
+  }
+  a { color: var(--theme); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--divider); }
+  .nav-inner { max-width: var(--max-width); margin: 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 1.4rem; padding: .8rem 1rem; font-size: .95rem; }
+  .nav-inner a { color: var(--text); }
+  #theme-toggle { background: none; border: none; cursor: pointer; color: var(--text); font-size: 1rem; }
+  main { max-width: var(--max-width); margin: 0 auto; padding: 6rem 1rem 4rem; }
+  h1 { font-family: "Roboto Slab", serif; font-weight: 300; font-size: 2.4rem; color: var(--text-strong); margin: 0 0 2rem; }
+  .post-item { border-bottom: 1px solid var(--divider); padding: 1.2rem 0; }
+  .post-item .title { font-size: 1.25rem; font-weight: 500; }
+  .post-item .date { font-size: .85rem; color: var(--text-muted); }
+  .post-item .preview { margin: .4rem 0 0; font-size: .95rem; color: var(--text-muted); }
+  article h2, article h3 { font-family: "Roboto Slab", serif; color: var(--text-strong); font-weight: 400; }
+  article .date { color: var(--text-muted); margin-bottom: 2rem; }
+  article pre { background: var(--card); padding: 1rem; border-radius: .4rem; overflow-x: auto; }
+  article code { background: var(--card); padding: .1rem .3rem; border-radius: .25rem; font-size: .9em; }
+  article pre code { padding: 0; background: none; }
+  article img { max-width: 100%; }
+  article blockquote { border-left: 3px solid var(--theme); margin: 1rem 0; padding: .2rem 1rem; color: var(--text-muted); }
+  .back { display: inline-block; margin-bottom: 1.5rem; font-size: .9rem; }
+  .empty { color: var(--text-muted); }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html">About</a>
+    <a href="blog.html">Blog</a>
+    <button id="theme-toggle" title="테마 변경" aria-label="테마 변경"><i class="fa-solid fa-moon"></i></button>
+  </div>
+</nav>
+
+<main id="app"><p class="empty">불러오는 중…</p></main>
+
+<script>
+  // 테마 토글
+  const root = document.documentElement;
+  const tbtn = document.getElementById('theme-toggle');
+  const ticon = tbtn.querySelector('i');
+  function applyTheme(dark) {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    ticon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  }
+  applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  tbtn.addEventListener('click', () => applyTheme(root.getAttribute('data-theme') !== 'dark'));
+
+  // 블로그 렌더링
+  const app = document.getElementById('app');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let posts = [];
+
+  function renderList() {
+    document.title = 'Blog';
+    if (posts.length === 0) {
+      app.innerHTML = '<h1>Blog</h1><p class="empty">아직 작성된 글이 없습니다.</p>';
+      return;
+    }
+    app.innerHTML = '<h1>Blog</h1>' + posts.map(p => `
+      <div class="post-item">
+        <div class="title"><a href="#${encodeURIComponent(p.slug)}">${esc(p.title)}</a></div>
+        <div class="date">${esc(p.date)}</div>
+        <p class="preview">${esc(p.content.replace(/[#*`>\-\n]/g, ' ').trim().slice(0, 120))}…</p>
+      </div>`).join('');
+  }
+
+  function renderPost(slug) {
+    const p = posts.find(x => x.slug === slug);
+    if (!p) { renderList(); return; }
+    document.title = p.title;
+    const html = DOMPurify.sanitize(marked.parse(p.content));
+    app.innerHTML = `
+      <a class="back" href="blog.html">&larr; 목록으로</a>
+      <article>
+        <h1>${esc(p.title)}</h1>
+        <div class="date">${esc(p.date)}</div>
+        ${html}
+      </article>`;
+    window.scrollTo(0, 0);
+  }
+
+  function route() {
+    const slug = decodeURIComponent(location.hash.slice(1));
+    slug ? renderPost(slug) : renderList();
+  }
+
+  fetch('posts.json?t=' + Date.now())
+    .then(r => r.ok ? r.json() : [])
+    .then(data => { posts = Array.isArray(data) ? data : []; route(); })
+    .catch(() => { app.innerHTML = '<h1>Blog</h1><p class="empty">글을 불러오지 못했습니다.</p>'; });
+
+  window.addEventListener('hashchange', route);
+</script>
+</body>
+</html>
